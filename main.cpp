@@ -8,8 +8,8 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     QApplication::setQuitOnLastWindowClosed (true);
 
-    MainWindow window;
-    window.show();
+    MainWindow *window = new MainWindow;
+    window->show();
 
     return app.exec();
 }

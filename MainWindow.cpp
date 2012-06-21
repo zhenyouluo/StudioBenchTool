@@ -7,6 +7,7 @@
 MainWindow::MainWindow()
 {
     setWindowTitle(tr("Studio Bench Tool"));
+    setAttribute(Qt::WA_DeleteOnClose);
 
     glWidget = new GLWidget(0, this);
 
@@ -23,5 +24,7 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
-
+    foreach(GLWidget* w, remoteRenderArea) {
+        delete w;
+    }
 }
