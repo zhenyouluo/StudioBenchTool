@@ -22,8 +22,6 @@ protected:
     void initializeGL();
     void paintGL();
     void resizeGL(int width, int height);
-    void timerEvent(QTimerEvent*);
-private:
     void gear(float inner_radius, float outer_radius, float width, int teeth, float tooth_depth);
 
     int m_screen;
@@ -31,6 +29,8 @@ private:
     float view_rotx, view_roty, view_rotz;
     int gear1, gear2, gear3;
     float angle;
+
+    friend class MainWindow;
 };
 
 #endif

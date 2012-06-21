@@ -9,6 +9,8 @@ GLWidget::GLWidget(int screen, QWidget *parent)
     : QGLWidget(parent),
       m_screen(screen)
 {
+    setAutoBufferSwap(false);
+
     view_rotx = 20.0;
     view_roty = 30.0;
     view_rotz = 0.0;
@@ -62,8 +64,6 @@ void GLWidget::initializeGL()
     glEndList();
 
     glEnable(GL_NORMALIZE);
-
-    startTimer(0);
 }
 
 void GLWidget::paintGL()
@@ -107,14 +107,6 @@ void GLWidget::resizeGL(int width, int height)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glTranslatef(0.0, 0.0, -40.0);
-}
-
-void GLWidget::timerEvent(QTimerEvent *)
-{
-    /* next frame */
-    angle += 2.0;
-
-    updateGL();
 }
 
 /*

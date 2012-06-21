@@ -4,9 +4,9 @@
 #include <QWidget>
 #include <QVector>
 
-class GLWidget;
+#include "GLWidget.h"
 
-class MainWindow : public QWidget
+class MainWindow : public GLWidget
 {
     Q_OBJECT
 
@@ -14,8 +14,11 @@ public:
     MainWindow();
 
     ~MainWindow();
+protected:
+    void initializeGL();
+    //void paintGL();
+    void timerEvent(QTimerEvent*);
 private:
-    GLWidget *glWidget;
 
     QVector<GLWidget*> remoteRenderArea;
 };
