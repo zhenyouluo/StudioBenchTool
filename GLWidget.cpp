@@ -5,6 +5,8 @@
 
 #include "GLWidget.h"
 
+bool GLWidget::useDisplayLists = true;
+
 GLWidget::GLWidget(int screen, QWidget *parent)
     : QGLWidget(parent),
       m_screen(screen)
@@ -19,7 +21,6 @@ GLWidget::GLWidget(int screen, QWidget *parent)
     gear2 = -1;
     gear3 = -1;
     angle = 0.0;
-    useDisplayLists = false;
 }
 
 GLWidget::~GLWidget()

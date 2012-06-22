@@ -18,6 +18,7 @@ public:
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
 
+    static bool useDisplayLists;
 protected:
     void initializeGL();
     void paintGL();
@@ -30,9 +31,8 @@ protected:
     float view_rotx, view_roty, view_rotz;
     int gear1, gear2, gear3;
     float angle;
-    bool useDisplayLists;
 
-    friend class MainWindow;
+    friend class Master;
 };
 
 #endif

@@ -6,5 +6,7 @@ INCLUDEPATH += .
 QT += opengl
 
 # Input
-HEADERS += GLWidget.h MainWindow.h
-SOURCES += GLWidget.cpp main.cpp MainWindow.cpp
+HEADERS += GLWidget.h MainWindow.h \
+    Master.h
+SOURCES += GLWidget.cpp main.cpp MainWindow.cpp \
+    Master.cpp
