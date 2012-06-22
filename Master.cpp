@@ -5,11 +5,11 @@
 #include <QApplication>
 
 Master::Master(QWidget *parent) :
-    GLWidget(parent)
+    GLWidget(QGLFormat(QGL::NoStereoBuffers), parent)
 {
     remoteRenderArea.resize(QApplication::desktop()->screenCount() - 1);
     for (int i=0; i<remoteRenderArea.size(); i++) {
-        remoteRenderArea[i] = new GLWidget(QApplication::desktop()->screen(i+1));
+        remoteRenderArea[i] = new GLWidget(QGLFormat(QGL::StereoBuffers), QApplication::desktop()->screen(i+1));
         remoteRenderArea[i]->showFullScreen();
     }
 }

@@ -12,6 +12,9 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow();
+private slots:
+    void useDisplayListsChanged(bool);
+    void useStereoChanged(bool);
 private:
     Master *master;
 };

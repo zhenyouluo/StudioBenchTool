@@ -21,6 +21,11 @@ MainWindow::MainWindow()
 
     QCheckBox *useDisplayListCheckBox = new QCheckBox(tr("Use Display Lists"), rightPanel);
     useDisplayListCheckBox->setChecked(GLWidget::useDisplayLists);
+    connect(useDisplayListCheckBox, SIGNAL(clicked(bool)), SLOT(useDisplayListsChanged(bool)));
+
+    QCheckBox *useStereoCheckBox = new QCheckBox(tr("Use Stereo"), rightPanel);
+    useStereoCheckBox->setChecked(GLWidget::useStereo);
+    connect(useStereoCheckBox, SIGNAL(clicked(bool)), SLOT(useStereoChanged(bool)));
 
     QVBoxLayout *rightLayout = new QVBoxLayout(rightPanel);
     rightLayout->addWidget(useDisplayListCheckBox, Qt::AlignTop);
@@ -28,4 +33,12 @@ MainWindow::MainWindow()
     setCentralWidget(centralWidget);
 }
 
+void MainWindow::useDisplayListsChanged(bool state)
+{
+    GLWidget::useDisplayLists = state;
+}
 
+void MainWindow::useStereoChanged(bool state)
+{
+    GLWidget::useStereo = state;
+}

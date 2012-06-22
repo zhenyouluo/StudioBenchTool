@@ -6,9 +6,13 @@
 #include "GLWidget.h"
 
 bool GLWidget::useDisplayLists = true;
+bool GLWidget::useStereo = false;
 
-GLWidget::GLWidget(QWidget *parent)
-    : QGLWidget(parent)
+static GLfloat eyesep = 5.0;            /* Eye separation. */
+static GLfloat fix_point = 40.0;        /* Fixation point distance.  */
+
+GLWidget::GLWidget(const QGLFormat & format, QWidget *parent)
+    : QGLWidget(format, parent)
 {
     setAutoBufferSwap(false);
     setUpdatesEnabled(false);
@@ -24,6 +28,9 @@ GLWidget::GLWidget(QWidget *parent)
 
 GLWidget::~GLWidget()
 {
+    glDeleteLists(gear1, 1);
+    glDeleteLists(gear2, 1);
+    glDeleteLists(gear3, 1);
 }
 
 QSize GLWidget::minimumSizeHint() const
@@ -79,64 +86,109 @@ void GLWidget::paintGL()
     glRotatef(view_roty, 0.0, 1.0, 0.0);
     glRotatef(view_rotz, 0.0, 0.0, 1.0);
 
-    drawGears();
+    draw();
 
     glPopMatrix();
 }
 
 void GLWidget::resizeGL(int width, int height)
 {
-    GLfloat h = (GLfloat) height / (GLfloat) width;
-
     glViewport(0, 0, (GLint) width, (GLint) height);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glFrustum(-1.0, 1.0, -h, h, 5.0, 60.0);
+
+    asp = (GLfloat) height / (GLfloat) width;
+    GLfloat w = fix_point * (1.0 / 5.0);
+
+    left = -5.0 * ((w - 0.5 * eyesep) / fix_point);
+    right = 5.0 * ((w + 0.5 * eyesep) / fix_point);
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glTranslatef(0.0, 0.0, -40.0);
 }
 
+void GLWidget::draw()
+{
+    if (useStereo) {
+        /* First left eye.  */
+        glDrawBuffer(GL_BACK_LEFT);
+
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glFrustum(left, right, -asp, asp, 5.0, 60.0);
+
+        glMatrixMode(GL_MODELVIEW);
+
+        glPushMatrix();
+        glTranslated(+0.5 * eyesep, 0.0, 0.0);
+        drawGears();
+        glPopMatrix();
+
+        /* Then right eye.  */
+        glDrawBuffer(GL_BACK_RIGHT);
+
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glFrustum(-right, -left, -asp, asp, 5.0, 60.0);
+
+        glMatrixMode(GL_MODELVIEW);
+
+        glPushMatrix();
+        glTranslated(-0.5 * eyesep, 0.0, 0.0);
+        drawGears();
+        glPopMatrix();
+    }
+    else {
+        glDrawBuffer(GL_BACK);
+
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glFrustum(-1.0, 1.0, -asp, asp, 5.0, 60.0);
+        glMatrixMode(GL_MODELVIEW);
+
+        drawGears();
+    }
+}
+
 void GLWidget::drawGears()
 {
-	static GLfloat red[4] = { 0.8f, 0.1f, 0.0f, 1.0f };
+    static GLfloat red[4] = { 0.8f, 0.1f, 0.0f, 1.0f };
     static GLfloat green[4] = { 0.0f, 0.8f, 0.2f, 1.0f };
     static GLfloat blue[4] = { 0.2f, 0.2f, 1.0f, 1.0f };
 
-	glPushMatrix();
+    glPushMatrix();
     glTranslatef(-3.0, -2.0, 0.0);
     glRotatef(angle, 0.0, 0.0, 1.0);
-	if (useDisplayLists) 
-	{
-		glCallList(gear1);
-	}else{
-		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, red);
-		gear(1.0f, 4.0f, 1.0f, 20.0f, 0.7f);
-	}
+    if (useDisplayLists)
+    {
+        glCallList(gear1);
+    }else{
+        glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, red);
+        gear(1.0f, 4.0f, 1.0f, 20.0f, 0.7f);
+    }
     glPopMatrix();
 
     glPushMatrix();
     glTranslatef(3.1f, -2.0f, 0.0f);
     glRotatef(-2.0 * angle - 9.0, 0.0, 0.0, 1.0);
-    if (useDisplayLists) 
-	{
-		glCallList(gear2);
-	}else{
-		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, green);
-		gear(0.5f, 2.0f, 2.0f, 10.0f, 0.7f);
-	}
+    if (useDisplayLists)
+    {
+        glCallList(gear2);
+    }else{
+        glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, green);
+        gear(0.5f, 2.0f, 2.0f, 10.0f, 0.7f);
+    }
     glPopMatrix();
 
     glPushMatrix();
     glTranslatef(-3.1f, 4.2f, 0.0f);
     glRotatef(-2.0 * angle - 25.0, 0.0, 0.0, 1.0);
-    if (useDisplayLists) 
-	{
-		glCallList(gear3);
-	}else{
-		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, blue);
-		gear(1.3f, 2.0f, 0.5f, 10.0f, 0.7f);
-	}
+    if (useDisplayLists)
+    {
+        glCallList(gear3);
+    }else{
+        glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, blue);
+        gear(1.3f, 2.0f, 0.5f, 10.0f, 0.7f);
+    }
     glPopMatrix();
 }
 
