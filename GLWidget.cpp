@@ -10,6 +10,7 @@ GLWidget::GLWidget(int screen, QWidget *parent)
       m_screen(screen)
 {
     setAutoBufferSwap(false);
+    setUpdatesEnabled(false);
 
     view_rotx = 20.0;
     view_roty = 30.0;
@@ -18,6 +19,7 @@ GLWidget::GLWidget(int screen, QWidget *parent)
     gear2 = -1;
     gear3 = -1;
     angle = 0.0;
+    useDisplayLists = false;
 }
 
 GLWidget::~GLWidget()
@@ -47,26 +49,25 @@ void GLWidget::initializeGL()
     glEnable(GL_LIGHT0);
     glEnable(GL_DEPTH_TEST);
 
-    /* make the gears */
-    gear1 = glGenLists(1);
-    glNewList(gear1, GL_COMPILE);
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, red);
-    gear(1.0f, 4.0f, 1.0f, 20.0f, 0.7f);
-    glEndList();
+	gear1 = glGenLists(1);
+	glNewList(gear1, GL_COMPILE);
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, red);
+	gear(1.0f, 4.0f, 1.0f, 20.0f, 0.7f);
+	glEndList();
 
-    gear2 = glGenLists(1);
-    glNewList(gear2, GL_COMPILE);
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, green);
-    gear(0.5f, 2.0f, 2.0f, 10.0f, 0.7f);
-    glEndList();
+	gear2 = glGenLists(1);
+	glNewList(gear2, GL_COMPILE);
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, green);
+	gear(0.5f, 2.0f, 2.0f, 10.0f, 0.7f);
+	glEndList();
 
-    gear3 = glGenLists(1);
-    glNewList(gear3, GL_COMPILE);
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, blue);
-    gear(1.3f, 2.0f, 0.5f, 10.0f, 0.7f);
-    glEndList();
+	gear3 = glGenLists(1);
+	glNewList(gear3, GL_COMPILE);
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, blue);
+	gear(1.3f, 2.0f, 0.5f, 10.0f, 0.7f);
+	glEndList();
 
-    glEnable(GL_NORMALIZE);
+	glEnable(GL_NORMALIZE);
 }
 
 void GLWidget::paintGL()
@@ -78,23 +79,7 @@ void GLWidget::paintGL()
     glRotatef(view_roty, 0.0, 1.0, 0.0);
     glRotatef(view_rotz, 0.0, 0.0, 1.0);
 
-    glPushMatrix();
-    glTranslatef(-3.0, -2.0, 0.0);
-    glRotatef(angle, 0.0, 0.0, 1.0);
-    glCallList(gear1);
-    glPopMatrix();
-
-    glPushMatrix();
-    glTranslatef(3.1f, -2.0f, 0.0f);
-    glRotatef(-2.0 * angle - 9.0, 0.0, 0.0, 1.0);
-    glCallList(gear2);
-    glPopMatrix();
-
-    glPushMatrix();
-    glTranslatef(-3.1f, 4.2f, 0.0f);
-    glRotatef(-2.0 * angle - 25.0, 0.0, 0.0, 1.0);
-    glCallList(gear3);
-    glPopMatrix();
+    drawGears();
 
     glPopMatrix();
 }
@@ -110,6 +95,49 @@ void GLWidget::resizeGL(int width, int height)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glTranslatef(0.0, 0.0, -40.0);
+}
+
+void GLWidget::drawGears()
+{
+	static GLfloat red[4] = { 0.8f, 0.1f, 0.0f, 1.0f };
+    static GLfloat green[4] = { 0.0f, 0.8f, 0.2f, 1.0f };
+    static GLfloat blue[4] = { 0.2f, 0.2f, 1.0f, 1.0f };
+
+	glPushMatrix();
+    glTranslatef(-3.0, -2.0, 0.0);
+    glRotatef(angle, 0.0, 0.0, 1.0);
+	if (useDisplayLists) 
+	{
+		glCallList(gear1);
+	}else{
+		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, red);
+		gear(1.0f, 4.0f, 1.0f, 20.0f, 0.7f);
+	}
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(3.1f, -2.0f, 0.0f);
+    glRotatef(-2.0 * angle - 9.0, 0.0, 0.0, 1.0);
+    if (useDisplayLists) 
+	{
+		glCallList(gear2);
+	}else{
+		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, green);
+		gear(0.5f, 2.0f, 2.0f, 10.0f, 0.7f);
+	}
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(-3.1f, 4.2f, 0.0f);
+    glRotatef(-2.0 * angle - 25.0, 0.0, 0.0, 1.0);
+    if (useDisplayLists) 
+	{
+		glCallList(gear3);
+	}else{
+		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, blue);
+		gear(1.3f, 2.0f, 0.5f, 10.0f, 0.7f);
+	}
+    glPopMatrix();
 }
 
 /*
