@@ -31,7 +31,7 @@ void MainWindow::initializeGL()
    startTimer(0);
 }
 
-void MainWindow::timerEvent(QTimerEvent *e)
+void MainWindow::timerEvent(QTimerEvent *)
 {
     /* next frame */
     angle += 2.0;
