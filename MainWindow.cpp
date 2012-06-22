@@ -10,6 +10,7 @@ MainWindow::MainWindow()
     setAttribute(Qt::WA_DeleteOnClose);
 
     master = new Master(this);
+    master->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     QWidget *centralWidget = new QWidget(this);
     QWidget *rightPanel = new QWidget(this);
