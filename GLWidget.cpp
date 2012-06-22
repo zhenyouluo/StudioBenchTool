@@ -7,9 +7,8 @@
 
 bool GLWidget::useDisplayLists = true;
 
-GLWidget::GLWidget(int screen, QWidget *parent)
-    : QGLWidget(parent),
-      m_screen(screen)
+GLWidget::GLWidget(QWidget *parent)
+    : QGLWidget(parent)
 {
     setAutoBufferSwap(false);
     setUpdatesEnabled(false);
