@@ -2,6 +2,7 @@
 #define MASTER_H
 
 #include <QVector>
+#include <QTime>
 #include "GLWidget.h"
 
 class Master : public GLWidget
@@ -17,6 +18,7 @@ protected:
     void timerEvent(QTimerEvent*);
 private:
     QVector<GLWidget*> remoteRenderArea;
+    QTime time;
 };
 
 #endif // MASTER_H

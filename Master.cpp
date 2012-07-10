@@ -26,6 +26,7 @@ void Master::initializeGL()
    GLWidget::initializeGL();
 
    startTimer(0);
+   time.start();
 }
 
 void Master::timerEvent(QTimerEvent *)
@@ -48,21 +49,16 @@ void Master::timerEvent(QTimerEvent *)
 
     /* calc framerate */
     {
-        static int t0 = -1;
         static int frames = 0;
-        int t = QTime::currentTime().second();
-
-        if (t0 < 0)
-            t0 = t;
 
         frames++;
 
-        if (t - t0 >= 5.0) {
-            GLfloat seconds = t - t0;
+	float seconds = time.elapsed() / 1000;
+        if (seconds >= 5.0) {
             GLfloat fps = frames / seconds;
             printf("%d frames in %3.1f seconds = %6.3f FPS\n", frames, seconds, fps);
-            t0 = t;
             frames = 0;
+            time.restart();
         }
     }
 }
