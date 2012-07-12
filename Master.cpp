@@ -39,13 +39,12 @@ void Master::timerEvent(QTimerEvent *)
         w->glDraw();
     }
     glDraw();
+    swapBuffers();
 
     foreach(GLWidget* w, remoteRenderArea) {
         w->makeCurrent();
         w->swapBuffers();
     }
-    makeCurrent();
-    swapBuffers();
 
     /* calc framerate */
     {
