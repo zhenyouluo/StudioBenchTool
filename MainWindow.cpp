@@ -27,8 +27,14 @@ MainWindow::MainWindow()
     useStereoCheckBox->setChecked(GLWidget::useStereo);
     connect(useStereoCheckBox, SIGNAL(clicked(bool)), SLOT(useStereoChanged(bool)));
 
+    QPushButton *closeButton = new QPushButton(tr("Close"), rightPanel);
+    connect(closeButton, SIGNAL(clicked()), SLOT(close()));
+
     QVBoxLayout *rightLayout = new QVBoxLayout(rightPanel);
-    rightLayout->addWidget(useDisplayListCheckBox, Qt::AlignTop);
+    rightLayout->addWidget(useStereoCheckBox);
+    rightLayout->addWidget(useDisplayListCheckBox);
+    rightLayout->addStretch(10);
+    rightLayout->addWidget(closeButton);
 
     setCentralWidget(centralWidget);
 }
